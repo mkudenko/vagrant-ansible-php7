@@ -1,0 +1,30 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server ipv6only=on;
+
+    server_name {{ webserver_hostname }} {{ webserver_hostname_alias }};
+
+    root {{ sites_dir }}/{{ webserver_hostname }};
+
+    index index.html index.htm index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    access_log off;
+    error_log  /var/log/nginx/{{ webserver_hostname }}-error.log error;
+
+    error_page 404 /index.php;
+
+    sendfile off;
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+    }
+}

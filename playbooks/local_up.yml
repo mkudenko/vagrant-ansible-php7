@@ -1,0 +1,57 @@
+---
+- hosts: all
+
+  gather_facts: false
+
+  vars_files:
+    - ../settings.yml
+
+  tasks:
+    - fail: msg="The system may not be provisioned according to the CMDB status."
+      when: local_ip_address is not defined
+
+    - name: local actions | remove entry from known hosts
+      command: ssh-keygen -R {{ boxipaddress }}
+      delegate_to: 127.0.0.1
+
+    - name: local actions | write local host.ini file
+      template: src=templates/host.j2 dest=../host.ini
+      delegate_to: 127.0.0.1
+
+    - name: local actions | remove reference of host from local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=absent
+          regexp='.*?\sadminer.{{ webserver_hostname }}'
+      delegate_to: 127.0.0.1
+      sudo: true
+
+    - name: local actions | add reference of host to local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=present
+          line='{{ local_ip_address }} adminer.{{ webserver_hostname }}'
+      delegate_to: 127.0.0.1
+      sudo: true
+
+    - name: local actions | remove reference of virtual hosts from local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=absent
+          regexp='.*?\s{{ item.alias }} www.{{ item.alias }} {%- if item.custom_aliases is defined %} {{ item.custom_aliases }} {%- endif %}'
+      when: item.vhost_type != "none"
+      delegate_to: 127.0.0.1
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+
+    - name: local actions | add reference of host to local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=present
+          line='{{ local_ip_address }} {{ item.alias }} www.{{ item.alias }} {%- if item.custom_aliases is defined %} {{ item.custom_aliases }} {%- endif %}'
+      when: item.vhost_type != "none"
+      delegate_to: 127.0.0.1
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"

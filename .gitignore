@@ -1,0 +1,40 @@
+# OS generated files #
+######################
+*~
+.DS_Store*
+.project
+.settings
+ehthumbs.db
+Icon?
+Thumbs.db
+.svn
+.directory
+
+# IDE generated files #
+#######################
+.project
+.settings
+*.bbprojectd
+*.sublime-project
+*.sublime-workspace
+*.tmproj
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+*.swp
+*~.nib
+nbproject
+.komodotools
+.idea
+
+# Vagrant specific files #
+##########################
+.vagrant
+
+# Provisioning specific files #
+#######################
+host.ini
+settings.yml
+ansible.log

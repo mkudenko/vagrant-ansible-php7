@@ -1,0 +1,32 @@
+---
+- name: Adminer | create adminer directory
+  file: path={{ sites_dir }}/adminer state=directory owner=vagrant mode=0777 recurse=yes
+  sudo: true
+
+- name: Adminer | copy adminer
+  copy: src=adminer-4.1.0-mysql-en.php dest={{ sites_dir }}/adminer/adminer-4.1.0-mysql-en.php
+  sudo: true
+
+- name: Adminer | copy adminer stylesheet
+  copy: src=adminer.css dest={{ sites_dir }}/adminer/adminer.css
+  sudo: true
+
+- name: Adminer | copy index.php configuration file into place
+  template: src=index.php.j2 dest={{ sites_dir }}/adminer/index.php
+  sudo: true
+
+- name: Adminer | add vhost
+  template: src=nginx_adminer_vhost.j2 dest=/etc/nginx/sites-available/adminer.{{ webserver_hostname }}
+  sudo: true
+
+- name: Adminer | enable adminer site
+  file: src=/etc/nginx/sites-available/adminer.{{ webserver_hostname }} dest=/etc/nginx/sites-enabled/adminer.{{ webserver_hostname }} state=link
+  sudo: true
+
+- name: Adminer | restart nginx
+  service: name=nginx state=restarted
+  sudo: true
+
+- name: Adminer | restart fpm
+  raw: service php7.0-fpm restart
+  sudo: true

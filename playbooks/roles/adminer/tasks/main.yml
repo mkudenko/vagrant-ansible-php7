@@ -1,0 +1,3 @@
+---
+- include: adminer.yml
+- include: phpinfo.yml

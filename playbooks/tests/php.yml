@@ -1,0 +1,23 @@
+---
+- name: Test | PHP is installed
+  shell: php -v
+  always_run: yes
+
+- name: Test | Get PHP-FPM service status
+  shell: service php7.0-fpm status
+  always_run: yes
+  register: fpm_status
+  ignore_errors: true
+  sudo: true
+
+- name: Test | PHP-FPM is running
+  fail: msg="PHP-FPM is not running."
+  when: fpm_status.stdout.find('running') == -1
+
+- name: Test | Composer is installed
+  shell: composer
+  always_run: yes
+
+- name: Test | Drush is installed
+  shell: drush
+  always_run: yes

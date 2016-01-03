@@ -1,0 +1,73 @@
+---
+# Configuration file
+# Change settings here to control how your box is set up.
+
+# Git settings
+git_name: "Your name"
+git_email: "your@email.com"
+
+# Welcome page settings
+webserver_hostname: 'vagrant-php7.local'
+webserver_hostname_alias: 'www.{{ webserver_hostname }}'
+
+# Virtual hosts
+vhosts:
+  - alias: domain.local
+    path: /absolute/path/to/project/folder/on/your/local/machine
+    # Set the type of the virtual host
+    # This can be one of "none", "default", "drupal", "laravel"
+    vhost_type: "default"
+    custom_aliases: sub1.domain.local sub2.domain.local
+    # If you don't want the database to be created, you can simply remove the next line.
+    db: projectdb
+    # If you use the "default" vhost type, you can specify the folder where your index.php is located.
+    # Example: "", "/public", "/www". Please use the slash, when the path is not empty. NO TRAILING SLASH.
+    index_file_folder: ""
+
+# Vagrantfile configuration
+boxipaddress: "192.168.200.210"
+boxname: "vagrant"
+
+username: "vagrant"
+# The following 2 variables assume that the username is "vagrant".
+# If you change the username, please adjust the variables accordingly.
+home_dir: "/home/vagrant"
+sites_dir: "/home/vagrant/sites"
+
+# Give VM 1/4 of system memory
+memory: 1024
+# Give VM access to all cpu cores on the host
+# To find out the number of cores, run the following commands:
+#   Mac: sysctl -n hw.ncpu
+#   Linux: nproc
+cpus: 2
+
+# php.ini settings
+php_memory_limit: 512M
+php_max_execution_time: 60
+php_post_max_size: 100M
+php_upload_max_filesize: 100M
+php_display_errors: On
+php_display_startup_errors: On
+php_html_errors: On
+php_date_timezone: Pacific/Auckland
+
+# MySQL Settings
+mysql_port: 3306
+mysql_root_password: password
+server_hostname: vagrant
+dbuser: user
+dbpass: password
+
+# MySQL my.cnf settings
+mysql_max_allowed_packet: 128M
+mysql_character_set_server: utf8
+mysql_collation_server: utf8_general_ci
+
+# Local hosts file location
+# Default location on *nix hosts is '/etc/hosts'
+hosts_file_location: "/etc/hosts"
+
+# Set the level of verbosity that Ansible will use
+# This can be one of "", "v", "vv", "vvv", or "vvvv"
+ansible_verbosity: ""

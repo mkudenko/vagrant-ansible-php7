@@ -1,0 +1,33 @@
+---
+- hosts: 127.0.0.1
+
+  vars_files:
+    - ../settings.yml
+
+  tasks:
+    - name: local actions destroy | delete local hosts.ini file
+      file: dest=../host.ini state=absent
+      delegate_to: 127.0.0.1
+
+    - name: local actions destroy | remove reference of host from local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=absent
+          regexp='.*?\sadminer.{{ webserver_hostname }}'
+      delegate_to: 127.0.0.1
+      sudo: true
+
+    - name: local actions | remove reference of virtual hosts from local hosts file
+      lineinfile:
+          dest='{{ hosts_file_location }}'
+          state=absent
+          regexp='.*?\s{{ item.alias }} www.{{ item.alias }}  {%- if item.custom_aliases is defined %} {{ item.custom_aliases }} {%- endif %}'
+      when: item.vhost_type != "none"
+      delegate_to: 127.0.0.1
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+
+    - name: local actions | remove entry from known hosts
+      command: ssh-keygen -R {{ boxipaddress }}
+      delegate_to: 127.0.0.1

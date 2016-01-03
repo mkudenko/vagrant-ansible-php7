@@ -1,0 +1,75 @@
+---
+- name: PHP | Add php-7.0 PPA
+  apt_repository: repo='ppa:ondrej/php-7.0'
+                  state=present
+                  update_cache=yes
+  sudo: true
+
+- name: PHP | install php packages
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - php7.0-fpm
+    - php7.0-cli
+    - php7.0-common
+    - php7.0-curl
+    - php7.0-json
+    - php7.0-gd
+    - php7.0-mcrypt
+    - php7.0-odbc
+    - php7.0-pgsql
+    - php7.0-mysql
+    - php7.0-xmlrpc
+    - php7.0-opcache
+    - php7.0-intl
+    - php7.0-bz2
+  sudo: true
+
+- name: PHP | FPM php.ini
+  template:
+    src=php.ini.j2
+    dest=/etc/php/7.0/fpm/php.ini
+    backup=yes
+    owner=root
+    group=root
+    mode=0644
+  sudo: true
+
+- name: PHP | CLI php.ini
+  template:
+    src=php.ini.j2
+    dest=/etc/php/7.0/cli/php.ini
+    backup=yes
+    owner=root
+    group=root
+    mode=0644
+  sudo: true
+
+- name: PHP | configure opcache
+  template:
+    src=opcache.ini.j2
+    dest=/etc/php/mods-available/opcache.ini
+    backup=yes
+    owner=root
+    group=root
+    mode=0644
+  sudo: true
+
+- name: PHP | configure for nginx 1
+  lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?group = www" insertafter="^[#|;]?group = www" line="group = vagrant"
+  sudo: true
+
+- name: PHP | configure for nginx 2
+  lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?listen\.group = www" insertafter="^[#|;]?listen\.group = www" line="listen.group = vagrant"
+  sudo: true
+
+- name: PHP | configure for nginx 3
+  lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?listen\.mode = 0660" insertafter="^[#|;]?listen\.mode = 0660" line="listen.mode = 0660"
+  sudo: true
+
+- name: PHP | restart nginx
+  raw: service php7.0-fpm restart
+  sudo: true
+
+- name: PHP | restart fpm
+  raw: service php7.0-fpm restart
+  sudo: true

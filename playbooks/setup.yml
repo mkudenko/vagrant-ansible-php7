@@ -1,0 +1,20 @@
+---
+- hosts: all
+
+  vars_files:
+    - ../settings.yml
+
+  roles:
+    - base
+    - nginx
+    - php
+    - mysql
+    - adminer
+    - automated_testing
+    - front
+
+  post_tasks:
+    - include: tests/main.yml
+
+  handlers:
+      - include: common/handlers/main.yml

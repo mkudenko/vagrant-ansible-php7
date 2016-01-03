@@ -1,0 +1,15 @@
+---
+- name: Codeception | Check if Codeception is installed
+  raw: codecept
+  register: codecept_installed
+  ignore_errors: true
+
+- name: Codeception | download codeception
+  shell: wget http://codeception.com/codecept.phar -O /usr/local/bin/codecept
+  when: codecept_installed.stdout.find('command not found') != -1
+  sudo: true
+
+- name: Codeception | make codecept file executable
+  shell: chmod +x /usr/local/bin/codecept
+  when: codecept_installed.stdout.find('command not found') != -1
+  sudo: true

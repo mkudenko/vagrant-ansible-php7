@@ -1,0 +1,28 @@
+<?php
+
+if (!isset($_GET['username']) && !isset($_GET['file'])) {
+  header('Location: http://' . $_SERVER['SERVER_NAME'] . '/?username={{ dbuser }}');
+}
+
+header("Pragma: no-cache");
+header("Cache-Control: s-maxage=0, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+header("Expires: Sun, 19 Nov 1978 05:00:00 GMT");
+
+function adminer_object() {
+    
+    class AdminerSoftware extends Adminer {
+        
+        public function name() {
+            return 'Webscope';
+        }
+        
+        public function credentials() {
+            return array('localhost', '{{ dbuser }}', '{{ dbpass }}');
+        }
+
+    }
+    
+    return new AdminerSoftware();
+}
+
+include "./adminer-4.1.0-mysql-en.php";

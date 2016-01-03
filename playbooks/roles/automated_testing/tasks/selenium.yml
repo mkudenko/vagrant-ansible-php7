@@ -1,0 +1,104 @@
+---
+- name: Selenium | Install headless OpenJDK and Xvfb
+  apt: pkg={{ item }} state=installed
+  sudo: true
+  with_items:
+    - openjdk-7-jre-headless
+    - firefox
+    - xvfb
+
+# https://gist.github.com/jterrace/2911875
+- name: Selenium | Configure Xvfb
+  template: src=xvfb.j2 dest=/etc/init.d/xvfb mode=0755
+  sudo: true
+
+- name: Selenium | Create a script for starting Xvfb
+  template: src=xvfb_start.j2 dest=/usr/bin/xvfb_start mode=0755
+  sudo: true
+
+- name: Selenium | Create Xvfb configuration for supervisor
+  action: template src=xvfb.conf.j2 dest=/etc/supervisor/conf.d/xvfb.conf
+  sudo: true
+
+- name: Selenium | Install the key from Google Linux Repository.
+  apt_key: url=https://dl-ssl.google.com/linux/linux_signing_key.pub state=present
+  sudo: true
+
+- name: Selenium | Add Google Chrome to apt repository
+  action: template src=chrome_repo.j2 dest=/etc/apt/sources.list.d/google-chrome.list
+  sudo: true
+
+- name: Selenium | Update apt cache
+  # raw command to force the update
+  raw: apt-get update
+  sudo: true
+
+- name: Selenium | Install Google Chrome
+  apt: pkg=google-chrome-stable state=installed
+  sudo: true
+
+- name: Selenium | Check if chromedriver is installed (ignore if fails).
+  raw: ls /usr/local/bin/chromedriver
+  register: chromedriver_installed
+  ignore_errors: true
+
+- name: Selenium | Download chromedriver.
+  get_url: url=https://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
+           dest=/home/vagrant/chromedriver_linux64.zip
+  when: chromedriver_installed.stdout.find('No such file or directory') != -1
+
+- name: Selenium | Unpack chromedriver.
+  raw: unzip -o -q /home/vagrant/chromedriver_linux64.zip -d /usr/local/bin
+  when: chromedriver_installed.stdout.find('No such file or directory') != -1
+  sudo: true
+
+- name: Selenium | Remove chromedriver archive.
+  file: path=/home/vagrant/chromedriver_linux64.zip state=absent
+  when: chromedriver_installed.stdout.find('No such file or directory') != -1
+
+- name: Selenium | Check if Selenium is installed (ignore if fails).
+  raw: ls /usr/bin/selenium-server-standalone-2.46.0.jar
+  register: selenium_installed
+  ignore_errors: true
+
+- name: Selenium | Install Selenium.
+  get_url: url=http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar
+           dest=/usr/bin/selenium-server-standalone-2.46.0.jar
+  when: selenium_installed.stdout.find('No such file or directory') != -1
+  sudo: true
+
+- name: Selenium | Create a script for starting Selenium
+  template: src=selenium_start.j2 dest=/usr/bin/selenium_start mode=0755
+  sudo: true
+
+- name: Selenium | Configure Selenium.
+  template: src=selenium.conf.j2 dest=/etc/supervisor/conf.d/selenium.conf
+  sudo: true
+
+- name: Selenium | look for changed supervisor configuration
+  shell: supervisorctl reread
+  sudo: true
+
+- name: Selenium | enable any changes for supervisor configuration
+  shell: supervisorctl update
+  sudo: true
+
+# export DISPLAY=":1" && java -jar /usr/bin/selenium-server-standalone.jar
+
+
+# https://gist.github.com/jterrace/2911875
+
+# create /etc/init.d/xvfb and chmod +x /etc/init.d/xvfb
+
+# sudo /etc/init.d/xvfb start
+
+
+#install chrome
+# wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+# sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+# sudo apt-get update
+# sudo apt-get install google-chrome-stable
+
+# https://chromedriver.storage.googleapis.com/2.9/chromedriver_linux64.zip
+
+# export DISPLAY=":1" && java -jar /usr/bin/selenium-server-standalone.jar java -jar selenium-server-standalone-2.41.0.jar Dwebdriver.chrome.driver="C:/usr/local/bin/chromedriver"

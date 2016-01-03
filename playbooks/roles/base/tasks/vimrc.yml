@@ -1,0 +1,36 @@
+---
+- name: Vim Config | Check if ~/.webscope-vim folder exists (ignore if fails)
+  raw: ls ~/.webscope-vim
+  register: webscope_vim_folder_exists
+  ignore_errors: true
+
+- name: Vim Config | Download Webscope vim setup
+  raw: git clone https://github.com/Webscope/webscope-vim.git ~/.webscope-vim
+  when: webscope_vim_folder_exists.stdout.find('No such file or directory') != -1
+
+- name: Vim Config | Update vim plugins
+  raw: cd ~/.webscope-vim && git submodule foreach git pull origin master
+
+- name: Vim Config | Check if ~/.vim folder exists (ignore if fails)
+  raw: ls ~/.vim
+  register: vim_folder_exists
+  ignore_errors: true
+
+- name: Vimrc Config | Remove ~/.vim folder
+  file: path=~/.vim
+        state=absent
+  when: vim_folder_exists.stdout.find('No such file or directory') == -1
+
+- name: Vim Config | Check if ~/.vimrc file exists (ignore if fails)
+  raw: ls ~/.vimrc
+  register: vimrc_exists
+  ignore_errors: true
+
+- name: Vimrc Config | Remove ~/.vimrc file
+  file: path=~/.vimrc
+        state=absent
+  when: vimrc_exists.stdout.find('No such file or directory') == -1
+
+- name: Vim Config | Setup vim config
+  raw: cd ~/.webscope-vim && sh install.sh
+

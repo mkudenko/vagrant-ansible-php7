@@ -1,0 +1,10 @@
+---
+- name: PHP | Check if Composer is installed (ignore if fails)
+  raw: composer
+  register: composer_installed
+  ignore_errors: true
+
+- name: PHP | Install Composer
+  shell: curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer creates=/usr/local/bin/composer
+  when: composer_installed.stdout.find('command not found') != -1
+  sudo: true

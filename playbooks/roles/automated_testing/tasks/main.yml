@@ -1,0 +1,4 @@
+---
+- include: codeception.yml
+- include: phantomjs.yml
+- include: selenium.yml

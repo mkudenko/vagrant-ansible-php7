@@ -1,0 +1,4 @@
+---  
+- name: Git Config | add .gitconfig file
+  template: src=gitconfig.j2 dest=/home/{{ user }}/.gitconfig
+  sudo: true

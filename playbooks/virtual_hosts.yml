@@ -1,0 +1,52 @@
+---
+- hosts: all
+
+  vars_files:
+    - ../settings.yml
+
+  tasks:
+
+    - name: Nginx | add "default" vhosts
+      template: src=templates/vhost_default.j2 dest=/etc/nginx/sites-available/{{ item.alias }}
+      when: item.vhost_type == "default"
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+
+    - name: Nginx | add "drupal" vhosts
+      template: src=templates/vhost_drupal.j2 dest=/etc/nginx/sites-available/{{ item.alias }}
+      when: item.vhost_type == "drupal"
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+
+    - name: Nginx | add "laravel" vhosts
+      template: src=templates/vhost_laravel.j2 dest=/etc/nginx/sites-available/{{ item.alias }}
+      when: item.vhost_type == "laravel"
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+
+    - name: Nginx | enable vhosts
+      file: src=/etc/nginx/sites-available/{{ item.alias }} dest=/etc/nginx/sites-enabled/{{ item.alias }} state=link
+      when: item.vhost_type != "none"
+      sudo: true
+      with_items:
+        - "{{ vhosts }}"
+      notify:
+        - restart nginx
+        - restart fpm
+
+    - name: MySQL | create applications databases
+      mysql_db:
+        name={{ item.db }}
+        state=present
+        login_password={{ mysql_root_password }}
+        login_user=root
+        collation={{ mysql_collation_server }}
+      when: item.db is defined
+      with_items:
+        - "{{ vhosts }}"
+
+  handlers:
+      - include: common/handlers/main.yml

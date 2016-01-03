@@ -1,0 +1,15 @@
+---
+- name: Test | NodeJS is installed
+  shell: nodejs -v
+
+- name: Test | NPM is installed
+  shell: npm -v
+
+- name: Test | Grunt is installed
+  shell: grunt --version
+
+- name: Test | Bower is installed
+  shell: bower --version
+
+- name: Test | Gulp is installed
+  shell: gulp --version
