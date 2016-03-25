@@ -4,7 +4,6 @@
   sudo: true
   with_items:
     - openjdk-7-jre-headless
-    - firefox
     - xvfb
 
 # https://gist.github.com/jterrace/2911875
@@ -57,13 +56,13 @@
   when: chromedriver_installed.stdout.find('No such file or directory') != -1
 
 - name: Selenium | Check if Selenium is installed (ignore if fails).
-  raw: ls /usr/bin/selenium-server-standalone-2.46.0.jar
+  raw: ls /usr/bin/selenium-server-standalone-2.52.0.jar
   register: selenium_installed
   ignore_errors: true
 
 - name: Selenium | Install Selenium.
-  get_url: url=http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar
-           dest=/usr/bin/selenium-server-standalone-2.46.0.jar
+  get_url: url=http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar
+           dest=/usr/bin/selenium-server-standalone-2.52.0.jar
   when: selenium_installed.stdout.find('No such file or directory') != -1
   sudo: true
 

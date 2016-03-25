@@ -9,11 +9,11 @@
   when: drush_installed.stdout.find('command not found') != -1
 
 - name: Drush | set drush to executable
-  command: chmod u+x drush chdir=/home/{{ user }}/.composer/vendor/drush/drush
+  command: chmod u+x drush chdir=/home/{{ user }}/.config/composer/vendor/drush/drush
   when: drush_installed.stdout.find('command not found') != -1
 
 - name: Drush | link up the drush command so everyone can run it
-  file: src=/home/{{ user }}/.composer/vendor/drush/drush/drush dest=/usr/bin/drush state=link
+  file: src=/home/{{ user }}/.config/composer/vendor/drush/drush/drush dest=/usr/bin/drush state=link
   when: drush_installed.stdout.find('command not found') != -1
   sudo: true
 

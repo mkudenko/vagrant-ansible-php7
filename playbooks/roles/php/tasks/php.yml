@@ -1,6 +1,6 @@
 ---
 - name: PHP | Add php-7.0 PPA
-  apt_repository: repo='ppa:ondrej/php-7.0'
+  apt_repository: repo='ppa:ondrej/php'
                   state=present
                   update_cache=yes
   sudo: true
@@ -17,6 +17,7 @@
     - php7.0-mcrypt
     - php7.0-odbc
     - php7.0-pgsql
+    - php7.0-mbstring
     - php7.0-mysql
     - php7.0-xmlrpc
     - php7.0-opcache
@@ -47,7 +48,7 @@
 - name: PHP | configure opcache
   template:
     src=opcache.ini.j2
-    dest=/etc/php/mods-available/opcache.ini
+    dest=/etc/php/7.0/mods-available/opcache.ini
     backup=yes
     owner=root
     group=root
