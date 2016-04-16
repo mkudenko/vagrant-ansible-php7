@@ -18,9 +18,7 @@
   sudo: true
 
 - name: NodeJS | Install Grunt, Bower and Gulp
-  npm: name={{ item }}
-       state=latest
-       global=yes
+  command: npm install -g {{ item }}
   sudo: true
   with_items:
     - grunt
