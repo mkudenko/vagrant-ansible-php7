@@ -29,7 +29,7 @@
 
 - name: MySQL | Config for easy access as root user
   template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf
-  when: "'{{ user }}' == 'root'"
+  sudo: true
 
 - name: MySQL | Config for easy access as root user
   template: src=mysql_root.my.cnf.j2 dest={{ home_dir }}/.my.cnf
