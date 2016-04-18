@@ -23,6 +23,7 @@
     - php7.0-opcache
     - php7.0-intl
     - php7.0-bz2
+    - php7.0-xml
   sudo: true
 
 - name: PHP | FPM php.ini
