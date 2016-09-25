@@ -6,20 +6,20 @@
 
 - name: NodeJS | Prepare for installation
   raw: "curl -sL https://deb.nodesource.com/setup | sudo bash -"
-  sudo: true
+  become: true
   when: npm_installed|failed
 
 - name: NodeJS | Install NodeJS
   apt: name=nodejs state=present
-  sudo: true
+  become: true
 
 - name: NodeJS | Install build-essentials package
   apt: name=build-essential state=present
-  sudo: true
+  become: true
 
 - name: NodeJS | Install Grunt, Bower and Gulp
   command: npm install -g {{ item }}
-  sudo: true
+  become: true
   with_items:
     - grunt
     - grunt-cli

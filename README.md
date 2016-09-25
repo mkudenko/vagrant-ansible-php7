@@ -6,10 +6,10 @@ That setup is heavily inspired by [https://github.com/hashbangcode/vlad](https:/
 
 ## What's inside ##
 
-* Ubuntu 14.04 64-bit
+* Ubuntu 16.04 64-bit
 * Nginx
 * PHP7-FPM
-* MySQL + Adminer
+* MySQL 5.7 + Adminer
 * Codeception + PhantomJS + Selenium + Chrome
 * NodeJS + Grunt + Bower + Gulp
 * Composer

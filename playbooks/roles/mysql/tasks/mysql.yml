@@ -1,7 +1,7 @@
 ---
 - name: MySQL | install mysql packages
   apt: pkg={{ item }} state=installed
-  sudo: true
+  become: true
   with_items:    
    - mysql-client
    - mysql-common
@@ -16,20 +16,20 @@
     owner=root
     group=root
     mode=0644
-  sudo: true
+  become: true
 
 - name: MySQL | restart mysql
   service: name=mysql state=restarted
-  sudo: true
+  become: true
 
 # MySQL database setup, this does the equivalent of mysql_secure_installation.
 - name: MySQL | Set the root password.
   mysql_user: name=root password={{ mysql_root_password }} host=localhost
-  sudo: true
+  become: true
 
 - name: MySQL | Config for easy access as root user
   template: src=mysql_root.my.cnf.j2 dest=/root/.my.cnf
-  sudo: true
+  become: true
 
 - name: MySQL | Config for easy access as root user
   template: src=mysql_root.my.cnf.j2 dest={{ home_dir }}/.my.cnf
@@ -61,4 +61,4 @@
 
 - name: MySQL | restart mysql
   service: name=mysql state=restarted
-  sudo: true
+  become: true

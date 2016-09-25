@@ -2,4 +2,3 @@
 - include: aptget.yml
 - include: bashrc.yml
 - include: gitconfig.yml
-- include: vimrc.yml

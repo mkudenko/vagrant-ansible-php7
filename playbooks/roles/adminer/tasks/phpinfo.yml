@@ -1,5 +1,5 @@
 ---
 - name: Phpinfo | copy phpinfo.php into place
   template: src=phpinfo.php.j2 dest={{ sites_dir }}/adminer/phpinfo.php
-  sudo: true
+  become: true
 

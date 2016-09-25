@@ -37,4 +37,5 @@ nbproject
 #######################
 host.ini
 settings.yml
-ansible.log
+*.log
+*.retry

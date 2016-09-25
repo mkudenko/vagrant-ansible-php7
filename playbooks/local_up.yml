@@ -24,7 +24,7 @@
           state=absent
           regexp='.*?\sadminer.{{ webserver_hostname }}'
       delegate_to: 127.0.0.1
-      sudo: true
+      become: true
 
     - name: local actions | add reference of host to local hosts file
       lineinfile:
@@ -32,7 +32,7 @@
           state=present
           line='{{ local_ip_address }} adminer.{{ webserver_hostname }}'
       delegate_to: 127.0.0.1
-      sudo: true
+      become: true
 
     - name: local actions | remove reference of virtual hosts from local hosts file
       lineinfile:
@@ -41,7 +41,7 @@
           regexp='.*?\s{{ item.alias }} www.{{ item.alias }} {%- if item.custom_aliases is defined %} {{ item.custom_aliases }} {%- endif %}'
       when: item.vhost_type != "none"
       delegate_to: 127.0.0.1
-      sudo: true
+      become: true
       with_items:
         - "{{ vhosts }}"
 
@@ -52,6 +52,6 @@
           line='{{ local_ip_address }} {{ item.alias }} www.{{ item.alias }} {%- if item.custom_aliases is defined %} {{ item.custom_aliases }} {%- endif %}'
       when: item.vhost_type != "none"
       delegate_to: 127.0.0.1
-      sudo: true
+      become: true
       with_items:
         - "{{ vhosts }}"

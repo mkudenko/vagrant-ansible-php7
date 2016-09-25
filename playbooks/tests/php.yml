@@ -8,7 +8,7 @@
   always_run: yes
   register: fpm_status
   ignore_errors: true
-  sudo: true
+  become: true
 
 - name: Test | PHP-FPM is running
   fail: msg="PHP-FPM is not running."

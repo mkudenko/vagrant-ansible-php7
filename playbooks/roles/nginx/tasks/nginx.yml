@@ -1,20 +1,20 @@
 ---
 - name: Nginx | install nginx
   apt: pkg=nginx state=installed
-  sudo: true
+  become: true
 
 - name: Nginx | nginx settings
   template: src=nginx.conf.j2
             dest=/etc/nginx/nginx.conf
             backup=yes
-  sudo: true
+  become: true
   notify:
     - restart nginx
 
 - name: Nginx | disable default server block
   file: path=/etc/nginx/sites-enabled/default
         state=absent
-  sudo: true
+  become: true
   notify:
     - restart nginx
 
@@ -23,4 +23,4 @@
 
 - name: Nginx | restart nginx
   service: name=nginx state=restarted
-  sudo: true
+  become: true

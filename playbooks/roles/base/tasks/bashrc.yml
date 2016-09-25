@@ -1,4 +1,3 @@
 ---  
 - name: Bashrc Config | add .bashrc file
   template: src=bashrc.j2 dest=/home/{{ user }}/.bashrc
-  sudo: true

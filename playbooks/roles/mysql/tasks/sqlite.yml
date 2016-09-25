@@ -1,7 +1,7 @@
 ---
 - name: MySQL | install sqlite packages
   apt: pkg={{ item }} state=installed
-  sudo: true
+  become: true
   with_items:    
    - php7.0-sqlite3
    - sqlite3

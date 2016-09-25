@@ -1,21 +1,24 @@
 ---
-- name: Drush | Check if Drush is installed (ignore if fails)
+- name: Check if Drush is installed (ignore if fails)
   raw: drush --version
   register: drush_installed
   ignore_errors: true
 
-- name: Drush | install drush via composer
-  command: composer global require drush/drush
+- name: Install drush via composer
+  composer:
+    command: "require"
+    arguments: "drush/drush"
+    working_dir: "{{ home_dir }}/.config/composer"
   when: drush_installed.stdout.find('command not found') != -1
 
-- name: Drush | set drush to executable
-  command: chmod u+x drush chdir=/home/{{ user }}/.config/composer/vendor/drush/drush
+- name: Set drush to executable
+  file: path=/home/{{ user }}/.config/composer/vendor/drush/drush/drush mode="u+x"
   when: drush_installed.stdout.find('command not found') != -1
 
-- name: Drush | link up the drush command so everyone can run it
+- name: Link up the drush command so everyone can run it
   file: src=/home/{{ user }}/.config/composer/vendor/drush/drush/drush dest=/usr/bin/drush state=link
   when: drush_installed.stdout.find('command not found') != -1
-  sudo: true
+  become: true
 
-- name: Drush | clear drush cache
+- name: Clear drush cache
   command: drush cc drush

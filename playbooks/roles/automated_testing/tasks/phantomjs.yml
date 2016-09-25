@@ -7,27 +7,27 @@
 - name: PhantomJS | install PhantomJS - step 1
   get_url: url=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 dest=/usr/local/share
   when: phantomjs_installed.stdout.find('/usr/bin/phantomjs') == -1
-  sudo: true
+  become: true
 
 - name: PhantomJS | install PhantomJS - step 2
   shell: cd /usr/local/share && aunpack phantomjs-2.1.1-linux-x86_64.tar.bz2
   when: phantomjs_installed.stdout.find('/usr/bin/phantomjs') == -1
-  sudo: true
+  become: true
 
 - name: PhantomJS | install PhantomJS - step 3
   shell: ln -s /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/
   when: phantomjs_installed.stdout.find('/usr/bin/phantomjs') == -1
-  sudo: true
+  become: true
   ignore_errors: True
 
 - name: PhantomJS | create phantomjs configuration for supervisor
   action: template src=phantomjs.conf.j2 dest=/etc/supervisor/conf.d/phantomjs.conf
-  sudo: true
+  become: true
 
 - name: PhantomJS | look for changed supervisor configuration
   shell: supervisorctl reread
-  sudo: true
+  become: true
 
 - name: PhantomJS | enable any changes for supervisor configuration
   shell: supervisorctl update
-  sudo: true
+  become: true

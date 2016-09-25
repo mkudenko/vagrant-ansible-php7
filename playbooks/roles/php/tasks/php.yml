@@ -3,7 +3,7 @@
   apt_repository: repo='ppa:ondrej/php'
                   state=present
                   update_cache=yes
-  sudo: true
+  become: true
 
 - name: PHP | install php packages
   apt: pkg={{ item }} state=installed
@@ -24,7 +24,8 @@
     - php7.0-intl
     - php7.0-bz2
     - php7.0-xml
-  sudo: true
+    - php7.0-zip
+  become: true
 
 - name: PHP | FPM php.ini
   template:
@@ -34,7 +35,7 @@
     owner=root
     group=root
     mode=0644
-  sudo: true
+  become: true
 
 - name: PHP | CLI php.ini
   template:
@@ -44,7 +45,7 @@
     owner=root
     group=root
     mode=0644
-  sudo: true
+  become: true
 
 - name: PHP | configure opcache
   template:
@@ -54,24 +55,24 @@
     owner=root
     group=root
     mode=0644
-  sudo: true
+  become: true
 
 - name: PHP | configure for nginx 1
   lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?group = www" insertafter="^[#|;]?group = www" line="group = vagrant"
-  sudo: true
+  become: true
 
 - name: PHP | configure for nginx 2
   lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?listen\.group = www" insertafter="^[#|;]?listen\.group = www" line="listen.group = vagrant"
-  sudo: true
+  become: true
 
 - name: PHP | configure for nginx 3
   lineinfile: dest=/etc/php/7.0/fpm/pool.d/www.conf regexp="^[#|;]?listen\.mode = 0660" insertafter="^[#|;]?listen\.mode = 0660" line="listen.mode = 0660"
-  sudo: true
+  become: true
 
 - name: PHP | restart nginx
   raw: service php7.0-fpm restart
-  sudo: true
+  become: true
 
 - name: PHP | restart fpm
   raw: service php7.0-fpm restart
-  sudo: true
+  become: true

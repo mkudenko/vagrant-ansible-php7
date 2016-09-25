@@ -10,11 +10,11 @@
     - php
     - mysql
     - adminer
-    - automated_testing
+#    - automated_testing
     - front
-
-  post_tasks:
-    - include: tests/main.yml
-
+#
+#  post_tasks:
+#    - include: tests/main.yml
+#
   handlers:
       - include: common/handlers/main.yml
