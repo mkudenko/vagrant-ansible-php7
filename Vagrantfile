@@ -88,6 +88,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vconfig['sites_dir'] + "/" + site_alias,
       create: true,
       type: "nfs",
+      mount_options: ['nolock'],
       :nfs => nfs_setting
   end
 
